@@ -111,7 +111,7 @@ impl Game {
                     self.state = GameState::Menu;
                 }
 
-
+                self.settings.update();
             },
             GameState::Closing => {}
         }
