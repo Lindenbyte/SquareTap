@@ -1,4 +1,6 @@
 use macroquad::prelude::*;
+
+#[cfg(target_os = "windows")]
 use winapi::um::winuser::ShowCursor;
 
 mod highscore;
@@ -45,6 +47,8 @@ impl Game {
     }
 
     pub async fn setup(&mut self) {
+
+        #[cfg(target_os = "windows")]
         unsafe {
             ShowCursor(0);
         }
