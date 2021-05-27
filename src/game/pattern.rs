@@ -91,7 +91,7 @@ impl Pattern {
                 self.time = self.time - get_frame_time();
 
                 let dt_click = current_time - self.last_time_clicked;
-                self.multiplier = (1.0 + (dt_click * (self.clicks as f64 / 6.5))).floor() as u16;
+                self.multiplier = (1.0 + (dt_click * (self.clicks as f64 / 4.5))).floor() as u16;
             } else {
                 self.time = 0.0;
                 self.done = true;
