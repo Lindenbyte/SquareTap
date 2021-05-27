@@ -3,13 +3,13 @@
 SquareTap is a game about clicking tiles as fast as you can. Fast clicks earn more points than slower ones. All this during a 30s timer before the round ends.
 
 ## Default keybindings
-Select: Enter
-Back: Escape
-Move up: Arrow up
-Move down: Arrow down
-Reset game: R
-Hide info: Tab
-Hide grid: G
+* Select: Enter
+* Back: Escape
+* Move up: Arrow up
+* Move down: Arrow down
+* Reset game: R
+* Hide info: Tab
+* Hide grid: G
 
 ## Good to know
 * Developed with **rustc v1.52.1** and **cargo v1.52.0**
