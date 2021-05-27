@@ -80,9 +80,6 @@ impl Game {
                 }
                 
                 self.pattern.update();
-                if self.pattern.done {
-                    self.state = GameState::Menu;
-                }
             },
             GameState::Highscore => {
                 if is_key_pressed(KeyCode::Escape) {
@@ -134,25 +131,11 @@ impl Game {
                     250.0, screen_height()/2.0 + 50.0, 
                     TextParams{ font, font_size: 32, color: close_color, ..Default::default() }
                 );
-
-                if self.pattern.done {
-                    let score_text = &*format!("SCORE: {}!!!", self.pattern.score);
-                    let score_text_dim = measure_text(score_text, Some(font), 64, 1.0);
-                    draw_text_ex(
-                        score_text, 
-                        screen_width() / 2.0 - score_text_dim.width / 2.0, screen_height() / 2.0, 
-                        TextParams{ font, font_size: 64, color: GREEN, ..Default::default() }
-                    );
-                }
             },
-            GameState::Running => self.pattern.render(),
+            GameState::Running => self.pattern.render(font),
             GameState::Highscore => {},
             GameState::Closing => {}
         }
-
-        // Cursor/Pointer
-        let mouse_pos = mouse_position();
-        draw_circle(mouse_pos.0, mouse_pos.1, 4.0, RED);
     }
 }
 

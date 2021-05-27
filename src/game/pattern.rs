@@ -15,6 +15,7 @@ pub struct Pattern {
     scale: f32,
     time: f32,
     pub done: bool,
+    last_click_pos: (f32, f32),
     display_info: bool,
     display_grid: bool,
     tiles: [bool; 16],
@@ -51,37 +52,41 @@ impl Pattern {
     }
 
     pub fn update(&mut self) {
-        self.tiles_size = 250.0 * self.scale;
-
-        if self.time > 0.0 {
-            self.time = self.time - get_frame_time();
-        } else {
-            self.time = 0.0;
-            self.done = true;
+        if is_key_pressed(KeyCode::R) {
+            self.setup();
         }
 
         if is_key_pressed(KeyCode::Tab) {
             self.display_info = !self.display_info;
         }
-
+        
         if is_key_pressed(KeyCode::G) {
             self.display_grid = !self.display_grid;
         }
-
+        
         // Scale
         if is_key_pressed(KeyCode::PageUp) {
             self.scale += SCALE_CHANGE;
         } else if is_key_pressed(KeyCode::PageDown) {
             self.scale -= SCALE_CHANGE;
         }
-
+        
         if self.scale > SCALE_MAX {
             self.scale = SCALE_MAX;
         } else if self.scale < SCALE_MIN {
             self.scale = SCALE_MIN;
         }
+        self.tiles_size = 250.0 * self.scale;
 
         if !self.done {
+            // Game time
+            if self.time > 0.0 {
+                self.time = self.time - get_frame_time();
+            } else {
+                self.time = 0.0;
+                self.done = true;
+            }
+
             // Tiles
             let xy = (
                 (screen_width() / 2.0) - self.tiles_size / 2.0, 
@@ -113,6 +118,7 @@ impl Pattern {
                             self.tiles[cell_pos] = !self.tiles[cell_pos];
                             self.score += self.multiplier as u32;
                         } else {
+                            self.last_click_pos = mouse_pos;
                             self.done = true;
                         }
                 }
@@ -120,7 +126,7 @@ impl Pattern {
         }
     }
 
-    pub fn render(&mut self) {        
+    pub fn render(&mut self, font: Font) {        
         let xy = (
             (screen_width() / 2.0) - self.tiles_size / 2.0, 
             (screen_height() / 2.0) - self.tiles_size / 2.0
@@ -199,6 +205,25 @@ impl Pattern {
                 draw_line(xy.0, xy.1 + cell * 3.0, xy.0 + cell * 4.0, xy.1 + cell * 3.0, 2.0, TILE_BORDER_COLOR);
             }
         }
+
+        if self.done {
+            let score_text = &*format!("SCORE: {}!!!", self.score);
+            let score_text_dim = measure_text(score_text, Some(font), 64, 1.0);
+            draw_text_ex(
+                score_text, 
+                screen_width() / 2.0 - score_text_dim.width / 2.0, (screen_height() / 2.0) - (self.tiles_size / 2.0) - 50.0, 
+                TextParams{ font, font_size: 64, color: GREEN, ..Default::default() }
+            );
+            
+            // Last clicked position
+            draw_circle(self.last_click_pos.0, self.last_click_pos.1, 4.0, color_u8!(255, 0, 0, 255));
+        }
+
+        // Cursor/Pointer
+        let mouse_pos = mouse_position();
+        // draw_circle(mouse_pos.0, mouse_pos.1, 2.0, color_u8!(255, 0, 0, 255));
+        draw_line(mouse_pos.0, mouse_pos.1 - 5.0, mouse_pos.0, mouse_pos.1 + 5.0, 1.0, color_u8!(255, 0, 0, 255));
+        draw_line(mouse_pos.0 - 5.0, mouse_pos.1, mouse_pos.0 + 5.0, mouse_pos.1, 1.0, color_u8!(255, 0, 0, 255));
     }
 }
 
@@ -210,6 +235,7 @@ impl Default for Pattern {
             scale: 1.0,
             time: 30.0,
             done: false,
+            last_click_pos: (0.0, 0.0),
             display_info: true,
             display_grid: true,
             tiles: [false; 16],
