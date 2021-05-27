@@ -1,6 +1,6 @@
 [package]
 name = "squaretap"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Kim Lindblå <kim.lindbla@gmail.com>"]
 edition = "2018"
 

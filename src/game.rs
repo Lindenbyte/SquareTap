@@ -99,7 +99,7 @@ impl Game {
 
         match self.state {
             GameState::Menu => {
-                let title = "SquareTap v0.1";
+                let title = "SquareTap v0.1.1 - alpha";
                 let title_dimensions = measure_text(title, Some(font), 78, 1.0);
                 draw_text_ex(title, 
                     screen_width() / 2.0 - title_dimensions.width / 2.0, screen_height() / 2.0 - 250.0, 
