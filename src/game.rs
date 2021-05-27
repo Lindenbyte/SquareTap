@@ -2,13 +2,17 @@ use winapi::um::winuser::ShowCursor;
 use macroquad::prelude::*;
 
 mod pattern;
+mod settings;
+
 use pattern::Pattern;
+use settings::Settings;
 
 #[derive(PartialEq)]
 pub enum GameState {
     Menu,
     Running,
     Highscore,
+    Settings,
     Closing
 }
 
@@ -16,6 +20,7 @@ pub enum GameState {
 enum MenuSelect {
     Run,
     Highscore,
+    Settings,
     Close
 }
 
@@ -26,6 +31,7 @@ pub struct Game {
     font: Font,
 
     pattern: Pattern,
+    settings: Settings,
 }
 
 impl Game {
@@ -49,12 +55,14 @@ impl Game {
                     match self.menu_selected {
                         MenuSelect::Run => {},
                         MenuSelect::Highscore => self.menu_selected = MenuSelect::Run,
-                        MenuSelect::Close => self.menu_selected = MenuSelect::Highscore
+                        MenuSelect::Settings => self.menu_selected = MenuSelect::Highscore,
+                        MenuSelect::Close => self.menu_selected = MenuSelect::Settings
                     }
                 } else if is_key_pressed(KeyCode::Down) {
                     match self.menu_selected {
                         MenuSelect::Run => self.menu_selected = MenuSelect::Highscore,
-                        MenuSelect::Highscore => self.menu_selected = MenuSelect::Close,
+                        MenuSelect::Highscore => self.menu_selected = MenuSelect::Settings,
+                        MenuSelect::Settings => self.menu_selected = MenuSelect::Close,
                         MenuSelect::Close => {}
                     }
                 }
@@ -67,6 +75,9 @@ impl Game {
                         },
                         MenuSelect::Highscore => {
                             self.state = GameState::Highscore;
+                        },
+                        MenuSelect::Settings => {
+                            self.state = GameState::Settings;
                         },
                         MenuSelect::Close => {
                             self.state = GameState::Closing;
@@ -85,6 +96,13 @@ impl Game {
                 if is_key_pressed(KeyCode::Escape) {
                     self.state = GameState::Menu;
                 }
+            },
+            GameState::Settings => {
+                if is_key_pressed(KeyCode::Escape) {
+                    self.state = GameState::Menu;
+                }
+
+
             },
             GameState::Closing => {}
         }
@@ -110,10 +128,12 @@ impl Game {
                 let not_selected = Color::from_rgba(255, 255, 255, 125);
                 let mut start_color = not_selected;
                 let mut highscore_color = not_selected;
+                let mut settings_color = not_selected;
                 let mut close_color = not_selected;
                 match self.menu_selected {
                     MenuSelect::Run => start_color = selected,
                     MenuSelect::Highscore => highscore_color = selected,
+                    MenuSelect::Settings => settings_color = selected,
                     MenuSelect::Close => close_color = selected
                 }
 
@@ -127,13 +147,19 @@ impl Game {
                     TextParams{ font, font_size: 32, color: highscore_color, ..Default::default() }
                 );
 
-                draw_text_ex("Exit", 
+                draw_text_ex("Settings", 
                     250.0, screen_height()/2.0 + 50.0, 
+                    TextParams{ font, font_size: 32, color: settings_color, ..Default::default() }
+                );
+
+                draw_text_ex("Exit", 
+                    250.0, screen_height()/2.0 + 100.0, 
                     TextParams{ font, font_size: 32, color: close_color, ..Default::default() }
                 );
             },
             GameState::Running => self.pattern.render(font),
             GameState::Highscore => {},
+            GameState::Settings => self.settings.render(font),
             GameState::Closing => {}
         }
     }
@@ -147,6 +173,7 @@ impl Default for Game {
             menu_background: Texture2D::empty(),
             font: Font::default(),
             pattern: Pattern::new(),
+            settings: Settings::new(),
         }
     }
 }

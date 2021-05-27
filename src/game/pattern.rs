@@ -15,7 +15,9 @@ pub struct Pattern {
     scale: f32,
     time: f32,
     pub done: bool,
+    clicks: u64,
     last_click_pos: (f32, f32),
+    last_time_clicked: f64,
     display_info: bool,
     display_grid: bool,
     tiles: [bool; 16],
@@ -36,6 +38,9 @@ impl Pattern {
         self.score = 0;
         self.multiplier = 1;
         self.time = 30.0;
+        self.clicks = 0;
+        self.last_click_pos = (0.0, 0.0);
+        self.last_time_clicked = 0.0;
         self.done = false;
         self.tiles = [false; 16];
 
@@ -52,6 +57,8 @@ impl Pattern {
     }
 
     pub fn update(&mut self) {
+        let current_time = get_time();
+
         if is_key_pressed(KeyCode::R) {
             self.setup();
         }
@@ -82,6 +89,9 @@ impl Pattern {
             // Game time
             if self.time > 0.0 {
                 self.time = self.time - get_frame_time();
+
+                let dt_click = current_time - self.last_time_clicked;
+                self.multiplier = (1.0 + (dt_click * (self.clicks as f64 / 6.5))).floor() as u16;
             } else {
                 self.time = 0.0;
                 self.done = true;
@@ -117,6 +127,8 @@ impl Pattern {
 
                             self.tiles[cell_pos] = !self.tiles[cell_pos];
                             self.score += self.multiplier as u32;
+                            self.last_time_clicked = current_time;
+                            self.clicks += 1;
                         } else {
                             self.last_click_pos = mouse_pos;
                             self.done = true;
@@ -222,8 +234,8 @@ impl Pattern {
         // Cursor/Pointer
         let mouse_pos = mouse_position();
         // draw_circle(mouse_pos.0, mouse_pos.1, 2.0, color_u8!(255, 0, 0, 255));
-        draw_line(mouse_pos.0, mouse_pos.1 - 5.0, mouse_pos.0, mouse_pos.1 + 5.0, 1.0, color_u8!(255, 0, 0, 255));
-        draw_line(mouse_pos.0 - 5.0, mouse_pos.1, mouse_pos.0 + 5.0, mouse_pos.1, 1.0, color_u8!(255, 0, 0, 255));
+        draw_line(mouse_pos.0, mouse_pos.1 - 5.0, mouse_pos.0, mouse_pos.1 + 5.0, 2.0, color_u8!(255, 0, 0, 255));
+        draw_line(mouse_pos.0 - 5.0, mouse_pos.1, mouse_pos.0 + 5.0, mouse_pos.1, 2.0, color_u8!(255, 0, 0, 255));
     }
 }
 
@@ -235,7 +247,9 @@ impl Default for Pattern {
             scale: 1.0,
             time: 30.0,
             done: false,
+            clicks: 0,
             last_click_pos: (0.0, 0.0),
+            last_time_clicked: 0.0,
             display_info: true,
             display_grid: true,
             tiles: [false; 16],
