@@ -14,6 +14,7 @@ pub struct Pattern {
     pub multiplier: u16,
     scale: f32,
     time: f32,
+    pub done: bool,
     display_info: bool,
     display_grid: bool,
     tiles: [bool; 16],
@@ -31,6 +32,12 @@ impl Pattern {
     }
 
     pub fn setup(&mut self) {
+        self.score = 0;
+        self.multiplier = 1;
+        self.time = 30.0;
+        self.done = false;
+        self.tiles = [false; 16];
+
         let mut generated_cells = 0;
         while generated_cells < 3 {
             let new_cell_pos = self.rng.gen_range(0..15);
@@ -48,6 +55,9 @@ impl Pattern {
 
         if self.time > 0.0 {
             self.time = self.time - get_frame_time();
+        } else {
+            self.time = 0.0;
+            self.done = true;
         }
 
         if is_key_pressed(KeyCode::Tab) {
@@ -71,37 +81,41 @@ impl Pattern {
             self.scale = SCALE_MIN;
         }
 
-        // Tiles
-        let xy = (
-            (screen_width() / 2.0) - self.tiles_size / 2.0, 
-            (screen_height() / 2.0) - self.tiles_size / 2.0
-        );
-        let cell = self.tiles_size / 4.0;
+        if !self.done {
+            // Tiles
+            let xy = (
+                (screen_width() / 2.0) - self.tiles_size / 2.0, 
+                (screen_height() / 2.0) - self.tiles_size / 2.0
+            );
+            let cell = self.tiles_size / 4.0;
 
-        if is_mouse_button_pressed(MouseButton::Left) {
-            let mouse_pos = mouse_position();
-            if (mouse_pos.0 > xy.0 && mouse_pos.1 > xy.1) &&
-            (mouse_pos.0 < xy.0 + cell * 4.0 && mouse_pos.1 < xy.1 + cell * 4.0) {
-                    let x = ((mouse_pos.0 - xy.0) / self.tiles_size * 4.0).floor();
-                    let y = ((mouse_pos.1 - xy.1) / self.tiles_size * 4.0).floor();
-                    let cell_pos = (x + (y * 4.0).floor()) as usize;
-                    
-                    let cell_val = self.tiles[cell_pos];
-                    if cell_val {
-                        let mut new_cell_found = false;
-                        while !new_cell_found {
-                            let new_cell = self.rng.gen_range(0..15);
-                            let new_cell_val = self.tiles[new_cell];
-                            
-                            if !new_cell_val {
-                                self.tiles[new_cell] = !new_cell_val;
-                                new_cell_found = true;
-                            } 
+            if is_mouse_button_pressed(MouseButton::Left) {
+                let mouse_pos = mouse_position();
+                if (mouse_pos.0 > xy.0 && mouse_pos.1 > xy.1) &&
+                (mouse_pos.0 < xy.0 + cell * 4.0 && mouse_pos.1 < xy.1 + cell * 4.0) {
+                        let x = ((mouse_pos.0 - xy.0) / self.tiles_size * 4.0).floor();
+                        let y = ((mouse_pos.1 - xy.1) / self.tiles_size * 4.0).floor();
+                        let cell_pos = (x + (y * 4.0).floor()) as usize;
+                        
+                        let cell_val = self.tiles[cell_pos];
+                        if cell_val {
+                            let mut new_cell_found = false;
+                            while !new_cell_found {
+                                let new_cell = self.rng.gen_range(0..15);
+                                let new_cell_val = self.tiles[new_cell];
+                                
+                                if !new_cell_val {
+                                    self.tiles[new_cell] = !new_cell_val;
+                                    new_cell_found = true;
+                                } 
+                            }
+
+                            self.tiles[cell_pos] = !self.tiles[cell_pos];
+                            self.score += self.multiplier as u32;
+                        } else {
+                            self.done = true;
                         }
-
-                        self.tiles[cell_pos] = !self.tiles[cell_pos];
-                        self.score += self.multiplier as u32;
-                    }
+                }
             }
         }
     }
@@ -195,6 +209,7 @@ impl Default for Pattern {
             multiplier: 1,
             scale: 1.0,
             time: 30.0,
+            done: false,
             display_info: true,
             display_grid: true,
             tiles: [false; 16],

@@ -62,8 +62,8 @@ impl Game {
                 if is_key_pressed(KeyCode::Enter) {
                     match self.menu_selected {
                         MenuSelect::Run => {
+                            self.pattern.setup();
                             self.state = GameState::Running;
-                            self.pattern = Pattern::new();
                         },
                         MenuSelect::Highscore => {
                             self.state = GameState::Highscore;
@@ -78,8 +78,11 @@ impl Game {
                 if is_key_pressed(KeyCode::Escape) {
                     self.state = GameState::Menu;
                 }
-
+                
                 self.pattern.update();
+                if self.pattern.done {
+                    self.state = GameState::Menu;
+                }
             },
             GameState::Highscore => {
                 if is_key_pressed(KeyCode::Escape) {
@@ -100,7 +103,7 @@ impl Game {
         match self.state {
             GameState::Menu => {
                 let title = "SquareTap v0.1";
-                let title_dimensions = measure_text(title, None, 78, 1.0);
+                let title_dimensions = measure_text(title, Some(font), 78, 1.0);
                 draw_text_ex(title, 
                     screen_width() / 2.0 - title_dimensions.width / 2.0, screen_height() / 2.0 - 250.0, 
                     TextParams{ font, font_size: 78, color: WHITE, ..Default::default()}
@@ -131,6 +134,16 @@ impl Game {
                     250.0, screen_height()/2.0 + 50.0, 
                     TextParams{ font, font_size: 32, color: close_color, ..Default::default() }
                 );
+
+                if self.pattern.done {
+                    let score_text = &*format!("SCORE: {}!!!", self.pattern.score);
+                    let score_text_dim = measure_text(score_text, Some(font), 64, 1.0);
+                    draw_text_ex(
+                        score_text, 
+                        screen_width() / 2.0 - score_text_dim.width / 2.0, screen_height() / 2.0, 
+                        TextParams{ font, font_size: 64, color: GREEN, ..Default::default() }
+                    );
+                }
             },
             GameState::Running => self.pattern.render(),
             GameState::Highscore => {},
@@ -146,7 +159,7 @@ impl Game {
 impl Default for Game {
     fn default() -> Game {
         return Game {
-            state: GameState::Running,
+            state: GameState::Menu,
             menu_selected: MenuSelect::Run,
             menu_background: Texture2D::empty(),
             font: Font::default(),
