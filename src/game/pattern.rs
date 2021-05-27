@@ -1,32 +1,54 @@
 use macroquad::prelude::*;
+use ::rand::{thread_rng, rngs::ThreadRng, Rng};
 
 const SCALE_MIN: f32 = 0.5;
 const SCALE_MAX: f32 = 3.0;
 const SCALE_CHANGE: f32 = 0.25;
 
-const TILE_FILLED_COLOR: Color = color_u8!(40, 130, 115, 255);
-const TILE_EMPTY_COLOR: Color = color_u8!(45, 55, 65, 255);
+const TILE_FILLED_COLOR: Color = color_u8!(45, 55, 65, 255);
+const TILE_EMPTY_COLOR: Color = color_u8!(40, 130, 115, 255);
 const TILE_BORDER_COLOR: Color = color_u8!(255, 255, 255, 255);
 
 pub struct Pattern {
     pub score: u32,
     pub multiplier: u16,
     scale: f32,
+    time: f32,
     display_info: bool,
     display_grid: bool,
     tiles: [bool; 16],
-    tiles_size: f32
+    tiles_size: f32,
+    rng: ThreadRng
 }
 
 impl Pattern {
     pub fn new() -> Self {
         // CHANGE: this later to all be default values
-        // return Self { ..Default::default() };
-        return Self { tiles: [false, true, false, true, true, false, true, false, false, true, false, true, true, false, true, false], ..Default::default() };
+        let mut p = Self { ..Default::default() };
+        p.setup();
+
+        return p;
+    }
+
+    pub fn setup(&mut self) {
+        let mut generated_cells = 0;
+        while generated_cells < 3 {
+            let new_cell_pos = self.rng.gen_range(0..15);
+            let new_cell_val = self.tiles[new_cell_pos];
+
+            if !new_cell_val {
+                self.tiles[new_cell_pos] = true;
+                generated_cells += 1;
+            }
+        }
     }
 
     pub fn update(&mut self) {
         self.tiles_size = 250.0 * self.scale;
+
+        if self.time > 0.0 {
+            self.time = self.time - get_frame_time();
+        }
 
         if is_key_pressed(KeyCode::Tab) {
             self.display_info = !self.display_info;
@@ -48,10 +70,43 @@ impl Pattern {
         } else if self.scale < SCALE_MIN {
             self.scale = SCALE_MIN;
         }
+
+        // Tiles
+        let xy = (
+            (screen_width() / 2.0) - self.tiles_size / 2.0, 
+            (screen_height() / 2.0) - self.tiles_size / 2.0
+        );
+        let cell = self.tiles_size / 4.0;
+
+        if is_mouse_button_pressed(MouseButton::Left) {
+            let mouse_pos = mouse_position();
+            if (mouse_pos.0 > xy.0 && mouse_pos.1 > xy.1) &&
+            (mouse_pos.0 < xy.0 + cell * 4.0 && mouse_pos.1 < xy.1 + cell * 4.0) {
+                    let x = ((mouse_pos.0 - xy.0) / self.tiles_size * 4.0).floor();
+                    let y = ((mouse_pos.1 - xy.1) / self.tiles_size * 4.0).floor();
+                    let cell_pos = (x + (y * 4.0).floor()) as usize;
+                    
+                    let cell_val = self.tiles[cell_pos];
+                    if cell_val {
+                        let mut new_cell_found = false;
+                        while !new_cell_found {
+                            let new_cell = self.rng.gen_range(0..15);
+                            let new_cell_val = self.tiles[new_cell];
+                            
+                            if !new_cell_val {
+                                self.tiles[new_cell] = !new_cell_val;
+                                new_cell_found = true;
+                            } 
+                        }
+
+                        self.tiles[cell_pos] = !self.tiles[cell_pos];
+                        self.score += self.multiplier as u32;
+                    }
+            }
+        }
     }
 
-    pub fn render(&mut self) {
-        
+    pub fn render(&mut self) {        
         let xy = (
             (screen_width() / 2.0) - self.tiles_size / 2.0, 
             (screen_height() / 2.0) - self.tiles_size / 2.0
@@ -71,6 +126,10 @@ impl Pattern {
             draw_text(
                 &*format!("Scale: {}", self.scale), 
                 50.0, 130.0, 32.0, WHITE
+            );
+            draw_text(
+                &*format!("Time: {}", self.time.floor()), 
+                50.0, 160.0, 32.0, WHITE
             );
         }
 
@@ -133,12 +192,14 @@ impl Default for Pattern {
     fn default() -> Pattern {
         return Pattern {
             score: 0,
-            multiplier: 0,
+            multiplier: 1,
             scale: 1.0,
+            time: 30.0,
             display_info: true,
             display_grid: true,
             tiles: [false; 16],
-            tiles_size: 250.0
+            tiles_size: 250.0,
+            rng: thread_rng()
         };
     }
 }

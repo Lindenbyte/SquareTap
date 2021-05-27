@@ -63,6 +63,7 @@ impl Game {
                     match self.menu_selected {
                         MenuSelect::Run => {
                             self.state = GameState::Running;
+                            self.pattern = Pattern::new();
                         },
                         MenuSelect::Highscore => {
                             self.state = GameState::Highscore;
