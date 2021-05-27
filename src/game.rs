@@ -135,6 +135,10 @@ impl Game {
             GameState::Highscore => {},
             GameState::Closing => {}
         }
+
+        // Cursor/Pointer
+        let mouse_pos = mouse_position();
+        draw_circle(mouse_pos.0, mouse_pos.1, 4.0, RED);
     }
 }
 
