@@ -1,5 +1,8 @@
 use macroquad::prelude::*;
 
+mod pattern;
+use pattern::Pattern;
+
 #[derive(PartialEq)]
 pub enum GameState {
     Menu,
@@ -19,7 +22,9 @@ pub struct Game {
     pub state: GameState,
     menu_selected: MenuSelect,
     menu_background: Texture2D,    
-    font: Font
+    font: Font,
+
+    pattern: Pattern,
 }
 
 impl Game {
@@ -67,6 +72,8 @@ impl Game {
                 if is_key_pressed(KeyCode::Escape) {
                     self.state = GameState::Menu;
                 }
+
+                self.pattern.update();
             },
             GameState::Highscore => {
                 if is_key_pressed(KeyCode::Escape) {
@@ -81,14 +88,11 @@ impl Game {
         let font = self.font;
         
         clear_background(BLACK);
-        // Line at halfway on X axis
-        draw_line(screen_width()/2.0, 0.0, screen_width()/2.0, screen_height(), 1.0, RED);
+        // Background
+        draw_texture(self.menu_background, 0.0, 0.0, WHITE);
 
         match self.state {
             GameState::Menu => {
-                // Background
-                draw_texture(self.menu_background, 0.0, 0.0, WHITE);
-
                 let title = "SquareTap v0.1";
                 let title_dimensions = measure_text(title, None, 78, 1.0);
                 draw_text_ex(title, 
@@ -122,7 +126,7 @@ impl Game {
                     TextParams{ font, font_size: 32, color: close_color, ..Default::default() }
                 );
             },
-            GameState::Running => {},
+            GameState::Running => self.pattern.render(),
             GameState::Highscore => {},
             GameState::Closing => {}
         }
@@ -132,10 +136,11 @@ impl Game {
 impl Default for Game {
     fn default() -> Game {
         return Game {
-            state: GameState::Menu,
+            state: GameState::Running,
             menu_selected: MenuSelect::Run,
             menu_background: Texture2D::empty(),
-            font: Font::default()
+            font: Font::default(),
+            pattern: Pattern::new(),
         }
     }
 }
