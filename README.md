@@ -9,6 +9,8 @@ SquareTap is a game about clicking tiles as fast as you can. Fast clicks earn mo
 * Back: Escape
 * Move up: Arrow up
 * Move down: Arrow down
+
+** Note these only apply once in game!
 * Reset game: R
 * Hide info: Tab
 * Hide grid: G
