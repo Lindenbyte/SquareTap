@@ -6,12 +6,12 @@ pub struct Highscore {
 
 impl Highscore {
     pub fn new() -> Self {
-        return Self { ..Default::default() };
+        return Self {
+            ..Default::default()
+        };
     }
 
-    pub fn setup(&mut self) {
-
-    }
+    pub fn setup(&mut self) {}
 
     pub fn score_exist(&mut self, score: u32) -> bool {
         return self.scores.iter().find(|&&val| val == score) == Some(&score);
@@ -30,27 +30,34 @@ impl Highscore {
         }
     }
 
-    pub fn update(&mut self) {
-        
-    }
+    pub fn update(&mut self) {}
 
     pub fn render(&mut self, font: Font) {
         let title = "Highscore";
         let title_dimensions = measure_text(title, Some(font), 78, 1.0);
-        draw_text_ex(title, 
-            screen_width() / 2.0 - title_dimensions.width / 2.0, screen_height() / 2.0 - 250.0, 
-            TextParams{ font, font_size: 78, color: WHITE, ..Default::default()}
+        draw_text_ex(
+            title,
+            screen_width() / 2.0 - title_dimensions.width / 2.0,
+            screen_height() / 2.0 - 250.0,
+            TextParams {
+                font,
+                font_size: 78,
+                color: WHITE,
+                ..Default::default()
+            },
         );
 
-        let xy: (f32, f32) = (
-            250.0,
-            screen_height() / 2.0 - 150.0
-        );
+        let xy: (f32, f32) = (250.0, screen_height() / 2.0 - 150.0);
         for i in 0..9 {
             draw_text_ex(
-                &*format!("{}:{: >10}", i + 1, self.scores[i]), 
-                xy.0, xy.1 + (i as f32 * 50.0), 
-                TextParams { font, font_size: 32, ..Default::default() }
+                &*format!("{}:{: >10}", i + 1, self.scores[i]),
+                xy.0,
+                xy.1 + (i as f32 * 50.0),
+                TextParams {
+                    font,
+                    font_size: 32,
+                    ..Default::default()
+                },
             );
         }
     }
@@ -58,8 +65,6 @@ impl Highscore {
 
 impl Default for Highscore {
     fn default() -> Highscore {
-        return Highscore {
-            scores: [0;9],
-        };
+        return Highscore { scores: [0; 9] };
     }
 }
