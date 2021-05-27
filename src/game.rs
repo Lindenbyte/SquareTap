@@ -2,9 +2,11 @@ use winapi::um::winuser::ShowCursor;
 use macroquad::prelude::*;
 
 mod pattern;
+mod highscore;
 mod settings;
 
 use pattern::Pattern;
+use highscore::Highscore;
 use settings::Settings;
 
 #[derive(PartialEq)]
@@ -31,6 +33,7 @@ pub struct Game {
     font: Font,
 
     pattern: Pattern,
+    highscore: Highscore,
     settings: Settings,
 }
 
@@ -74,6 +77,7 @@ impl Game {
                             self.state = GameState::Running;
                         },
                         MenuSelect::Highscore => {
+                            self.highscore.setup();
                             self.state = GameState::Highscore;
                         },
                         MenuSelect::Settings => {
@@ -91,11 +95,16 @@ impl Game {
                 }
                 
                 self.pattern.update();
+                if self.pattern.done && !self.highscore.score_exist(self.pattern.score) {
+                    self.highscore.add_score(self.pattern.score);
+                }
             },
             GameState::Highscore => {
                 if is_key_pressed(KeyCode::Escape) {
                     self.state = GameState::Menu;
                 }
+
+                self.highscore.update();
             },
             GameState::Settings => {
                 if is_key_pressed(KeyCode::Escape) {
@@ -117,7 +126,7 @@ impl Game {
 
         match self.state {
             GameState::Menu => {
-                let title = "SquareTap v0.1.1 - alpha";
+                let title = "SquareTap v0.1.2 - alpha";
                 let title_dimensions = measure_text(title, Some(font), 78, 1.0);
                 draw_text_ex(title, 
                     screen_width() / 2.0 - title_dimensions.width / 2.0, screen_height() / 2.0 - 250.0, 
@@ -158,10 +167,16 @@ impl Game {
                 );
             },
             GameState::Running => self.pattern.render(font),
-            GameState::Highscore => {},
+            GameState::Highscore => self.highscore.render(font),
             GameState::Settings => self.settings.render(font),
             GameState::Closing => {}
         }
+
+        draw_text_ex(
+            "v0.1.2 alpha", 
+            50.0, screen_height() - 32.0, 
+            TextParams { font, font_size: 16, color: WHITE, ..Default::default() }
+        );
     }
 }
 
@@ -173,6 +188,7 @@ impl Default for Game {
             menu_background: Texture2D::empty(),
             font: Font::default(),
             pattern: Pattern::new(),
+            highscore: Highscore::new(),
             settings: Settings::new(),
         }
     }
