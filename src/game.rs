@@ -29,7 +29,7 @@ impl Game {
 
     pub async fn setup(&mut self) {
         self.menu_background = load_texture("res/img/menu_background.png").await.unwrap();
-        self.font = load_ttf_font("res/font/font.ttf").await.unwrap();
+        self.font = load_ttf_font("res/fonts/font.ttf").await.unwrap();
     }
 
     pub fn update(&mut self) {
