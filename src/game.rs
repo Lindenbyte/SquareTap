@@ -68,7 +68,11 @@ impl Game {
                     self.state = GameState::Menu;
                 }
             },
-            GameState::Highscore => {},
+            GameState::Highscore => {
+                if is_key_pressed(KeyCode::Escape) {
+                    self.state = GameState::Menu;
+                }
+            },
             GameState::Closing => {}
         }
     }
@@ -78,7 +82,7 @@ impl Game {
         
         clear_background(BLACK);
         // Line at halfway on X axis
-        // draw_line(screen_width()/2.0, 0.0, screen_width()/2.0, screen_height(), 1.0, RED);
+        draw_line(screen_width()/2.0, 0.0, screen_width()/2.0, screen_height(), 1.0, RED);
 
         match self.state {
             GameState::Menu => {
