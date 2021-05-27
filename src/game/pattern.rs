@@ -15,6 +15,7 @@ pub struct Pattern {
     display_info: bool,
     display_grid: bool,
     tiles: [bool; 16],
+    tiles_size: f32
 }
 
 impl Pattern {
@@ -25,6 +26,8 @@ impl Pattern {
     }
 
     pub fn update(&mut self) {
+        self.tiles_size = 250.0 * self.scale;
+
         if is_key_pressed(KeyCode::Tab) {
             self.display_info = !self.display_info;
         }
@@ -48,18 +51,18 @@ impl Pattern {
     }
 
     pub fn render(&mut self) {
-        let size: f32 = 250.0 * self.scale;
+        
         let xy = (
-            (screen_width() / 2.0) - size / 2.0, 
-            (screen_height() / 2.0) - size / 2.0
+            (screen_width() / 2.0) - self.tiles_size / 2.0, 
+            (screen_height() / 2.0) - self.tiles_size / 2.0
         );
-        let cell = size / 4.0;
+        let cell = self.tiles_size / 4.0;
 
         // display_info information
         if self.display_info {
             draw_text(
                 &*format!("Score: {}", self.score), 
-                50.0, 75.0, 32.0, WHITE
+                50.0, 70.0, 32.0, WHITE
             );
             draw_text(
                 &*format!("Multiplier: {}", self.multiplier), 
@@ -67,13 +70,13 @@ impl Pattern {
             );
             draw_text(
                 &*format!("Scale: {}", self.scale), 
-                50.0, 125.0, 32.0, WHITE
+                50.0, 130.0, 32.0, WHITE
             );
         }
 
         // Tile background. IE "outer grid lines"
         if self.display_grid {
-            draw_rectangle(xy.0 - 2.0, xy.1 - 2.0, size + 4.0, size + 4.0, TILE_BORDER_COLOR);
+            draw_rectangle(xy.0 - 2.0, xy.1 - 2.0, self.tiles_size + 4.0, self.tiles_size + 4.0, TILE_BORDER_COLOR);
         }
         
         // Tiles and grid
@@ -135,6 +138,7 @@ impl Default for Pattern {
             display_info: true,
             display_grid: true,
             tiles: [false; 16],
+            tiles_size: 250.0
         };
     }
 }
