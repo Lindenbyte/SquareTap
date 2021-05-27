@@ -29,7 +29,7 @@ impl Game {
 
     pub async fn setup(&mut self) {
         self.menu_background = load_texture("res/img/menu_background.png").await.unwrap();
-        self.font = load_ttf_font("res/fonts/font.ttf").await.unwrap();
+        self.font = load_ttf_font("res/fonts/alagard.ttf").await.unwrap();
     }
 
     pub fn update(&mut self) {
@@ -92,11 +92,11 @@ impl Game {
                     TextParams{ font, font_size: 78, color: WHITE, ..Default::default()}
                 );
 
-                let selected        = Color::from_rgba(255, 255, 255, 255);
-                let not_selected    = Color::from_rgba(255, 255, 255, 125);
-                let mut start_color     = not_selected;
+                let selected = Color::from_rgba(255, 255, 255, 255);
+                let not_selected = Color::from_rgba(255, 255, 255, 125);
+                let mut start_color = not_selected;
                 let mut highscore_color = not_selected;
-                let mut close_color     = not_selected;
+                let mut close_color = not_selected;
                 match self.menu_selected {
                     MenuSelect::Run => start_color = selected,
                     MenuSelect::Highscore => highscore_color = selected,
