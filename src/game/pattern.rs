@@ -132,8 +132,8 @@ impl Default for Pattern {
             score: 0,
             multiplier: 0,
             scale: 1.0,
-            display_info: false,
-            display_grid: false,
+            display_info: true,
+            display_grid: true,
             tiles: [false; 16],
         };
     }
