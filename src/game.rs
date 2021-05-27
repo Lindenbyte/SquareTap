@@ -1,3 +1,4 @@
+use winapi::um::winuser::ShowCursor;
 use macroquad::prelude::*;
 
 mod pattern;
@@ -33,6 +34,10 @@ impl Game {
     }
 
     pub async fn setup(&mut self) {
+        unsafe {
+            ShowCursor(0);
+        }
+
         self.menu_background = load_texture("res/img/menu_background.png").await.unwrap();
         self.font = load_ttf_font("res/fonts/alagard.ttf").await.unwrap();
     }

@@ -884,6 +884,7 @@ name = "squaretap"
 version = "0.1.0"
 dependencies = [
  "macroquad",
+ "winapi",
 ]
 
 [[package]]

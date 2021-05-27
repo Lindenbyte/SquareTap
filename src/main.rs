@@ -17,7 +17,7 @@ fn window_config() -> Conf {
 async fn main() {
     let mut game = Game::new();
     game.setup().await;
-   
+
     let camera = Camera2D::from_display_rect(Rect::new(0.0, 0.0, screen_width() as f32, screen_height() as f32));
     set_camera(&camera);
 

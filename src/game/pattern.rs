@@ -123,6 +123,9 @@ impl Pattern {
                 draw_line(xy.0, xy.1 + cell * 3.0, xy.0 + cell * 4.0, xy.1 + cell * 3.0, 2.0, TILE_BORDER_COLOR);
             }
         }
+
+        let mouse_pos = mouse_position();
+        draw_circle(mouse_pos.0, mouse_pos.1, 16.0, RED);
     }
 }
 
