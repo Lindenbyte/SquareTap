@@ -71,8 +71,6 @@ impl Game {
         if !self.save_loaded && Path::new("gamesave.bin").exists() {
             let save = load_from_file();  
             let scores = save.highscores.as_slice().try_into().unwrap();
-
-            println!("{:?}", scores);
             
             self.highscore.scores = scores;
             self.save_loaded = true;

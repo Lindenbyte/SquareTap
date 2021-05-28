@@ -1,8 +1,11 @@
-# SquareTap *v0.1.2-alpha*
+# SquareTap *v0.1.3-alpha*
 ![Game screenshot](./img/screenshot_one.png)
 
 ## What is SquareTap?
 SquareTap is a game about clicking tiles as fast as you can. Fast clicks earn more points than slower ones. All this during a 30s timer before the round ends.
+
+## Changelog *v0.1.3-alpha*
+* Added basic implementation of a save system.
 
 ## Default keybindings
 * Select: Enter
