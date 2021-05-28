@@ -5,14 +5,10 @@ const SCALE_MIN: f32 = 0.5;
 const SCALE_MAX: f32 = 3.0;
 const SCALE_CHANGE: f32 = 0.25;
 
-const TILE_FILLED_COLOR: Color = color_u8!(45, 55, 65, 255);
-const TILE_EMPTY_COLOR: Color = color_u8!(40, 130, 115, 255);
-const TILE_BORDER_COLOR: Color = color_u8!(255, 255, 255, 255);
-
 pub struct Pattern {
     pub score: u32,
     pub multiplier: u16,
-    scale: f32,
+    pub scale: f32,
     time: f32,
     pub done: bool,
     clicks: u64,
@@ -22,6 +18,9 @@ pub struct Pattern {
     display_grid: bool,
     tiles: [bool; 16],
     tiles_size: f32,
+    pub tiles_filled_color: Color,
+    pub tiles_empty_color: Color,
+    pub tiles_border_color: Color,
     rng: ThreadRng,
 }
 
@@ -175,7 +174,7 @@ impl Pattern {
                 xy.1 - 2.0,
                 self.tiles_size + 4.0,
                 self.tiles_size + 4.0,
-                TILE_BORDER_COLOR,
+                self.tiles_border_color,
             );
         }
 
@@ -185,9 +184,9 @@ impl Pattern {
 
             let color: Color;
             if filled {
-                color = TILE_FILLED_COLOR;
+                color = self.tiles_filled_color;
             } else {
-                color = TILE_EMPTY_COLOR;
+                color = self.tiles_empty_color;
             }
 
             // Tiles
@@ -222,7 +221,7 @@ impl Pattern {
                     xy.0 + cell,
                     xy.1 + cell * 4.0,
                     2.0,
-                    TILE_BORDER_COLOR,
+                    self.tiles_border_color,
                 );
                 draw_line(
                     xy.0 + cell * 2.0,
@@ -230,7 +229,7 @@ impl Pattern {
                     xy.0 + cell * 2.0,
                     xy.1 + cell * 4.0,
                     2.0,
-                    TILE_BORDER_COLOR,
+                    self.tiles_border_color,
                 );
                 draw_line(
                     xy.0 + cell * 3.0,
@@ -238,7 +237,7 @@ impl Pattern {
                     xy.0 + cell * 3.0,
                     xy.1 + cell * 4.0,
                     2.0,
-                    TILE_BORDER_COLOR,
+                    self.tiles_border_color,
                 );
 
                 // Grid horizontal
@@ -248,7 +247,7 @@ impl Pattern {
                     xy.0 + cell * 4.0,
                     xy.1 + cell,
                     2.0,
-                    TILE_BORDER_COLOR,
+                    self.tiles_border_color,
                 );
                 draw_line(
                     xy.0,
@@ -256,7 +255,7 @@ impl Pattern {
                     xy.0 + cell * 4.0,
                     xy.1 + cell * 2.0,
                     2.0,
-                    TILE_BORDER_COLOR,
+                    self.tiles_border_color,
                 );
                 draw_line(
                     xy.0,
@@ -264,7 +263,7 @@ impl Pattern {
                     xy.0 + cell * 4.0,
                     xy.1 + cell * 3.0,
                     2.0,
-                    TILE_BORDER_COLOR,
+                    self.tiles_border_color,
                 );
             }
         }
@@ -330,6 +329,9 @@ impl Default for Pattern {
             display_grid: true,
             tiles: [false; 16],
             tiles_size: 250.0,
+            tiles_filled_color: WHITE,
+            tiles_empty_color: WHITE,
+            tiles_border_color: WHITE,
             rng: thread_rng(),
         };
     }

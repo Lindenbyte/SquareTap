@@ -16,7 +16,10 @@ mod saves;
 
 use highscore::Highscore;
 use pattern::Pattern;
-use settings::Settings;
+use settings::{
+    GameSettings,
+    Settings
+};
 use saves::{
     GameSave,
     load_from_file
@@ -76,6 +79,13 @@ impl Game {
             self.save_loaded = true;
         }
 
+        let options = Settings::load_options();
+        self.pattern.tiles_filled_color = options.filled_color;
+        self.pattern.tiles_empty_color = options.empty_color;
+        self.pattern.tiles_border_color = options.border_color;
+        self.pattern.scale = options.scale;
+        
+        // Resources
         self.menu_background = load_texture("res/img/menu_background.png").await.unwrap();
         self.font = load_ttf_font("res/fonts/alagard.ttf").await.unwrap();
     }
@@ -169,7 +179,7 @@ impl Game {
 
         match self.state {
             GameState::Menu => {
-                let title = "SquareTap v0.1.3 - alpha";
+                let title = "SquareTap v0.1.4 - alpha";
                 let title_dimensions = measure_text(title, Some(font), 78, 1.0);
                 draw_text_ex(
                     title,
@@ -251,7 +261,7 @@ impl Game {
         }
 
         draw_text_ex(
-            "v0.1.3 alpha",
+            "v0.1.4 alpha",
             50.0,
             screen_height() - 32.0,
             TextParams {

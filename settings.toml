@@ -1,0 +1,20 @@
+# Example theme:
+# filled, empty, border are RGBA colors,
+# R = Red, G = Green, B = Blue, A = Alpha
+# scale is the default scale of the tiles
+# tile_filled  = [45, 55, 65, 255]
+# tile_empty   = [40, 130, 115, 255]
+# tile_border  = [255, 255, 255, 255]
+# scale   = 1.0
+
+# Theme 1
+tile_filled  = [45, 55, 65, 255]
+tile_empty   = [40, 130, 115, 255]
+tile_border  = [255, 255, 255, 255]
+
+# Theme 2
+# tile_filled  = [175, 50, 100, 255]
+# tile_empty   = [200, 190, 75, 255]
+# tile_border  = [55, 20, 50, 255]
+
+scale   = 1.0
