@@ -1,4 +1,4 @@
-# SquareTap *v0.1.3-alpha*
+# SquareTap *v0.1.4-alpha*
 ![Game screenshot](./img/screenshot_one.png)
 
 ## What is SquareTap?
