@@ -11,6 +11,8 @@ struct GameOptions {
     pub tile_filled: Vec<u8>,
     pub tile_empty: Vec<u8>,
     pub tile_border: Vec<u8>,
+    pub crosshair: Vec<u8>,
+    pub score: Vec<u8>,
     pub scale: f64,
 }
 
@@ -18,17 +20,23 @@ pub struct GameSettings {
     pub filled_color: Color,
     pub empty_color: Color,
     pub border_color: Color,
+    pub crosshair_color: Color,
+    pub score_color: Color,
     pub scale: f32,
 }
 
-const TILE_FILLED_COLOR: Color = color_u8!(45, 55, 65, 255);
-const TILE_EMPTY_COLOR: Color = color_u8!(40, 130, 115, 255);
-const TILE_BORDER_COLOR: Color = color_u8!(255, 255, 255, 255);
+const TILE_FILLED_COLOR: Color  = color_u8!(45, 55, 65, 255);
+const TILE_EMPTY_COLOR: Color   = color_u8!(40, 130, 115, 255);
+const TILE_BORDER_COLOR: Color  = color_u8!(255, 255, 255, 255);
+const CROSSHAIR_COLOR: Color    = color_u8!(255, 0, 0, 255);
+const SCORE_COLOR: Color        = color_u8!(0, 255, 0, 255);
 
 const DEFAULT_GAME_OPTIONS: GameSettings = GameSettings{
     filled_color: TILE_FILLED_COLOR,
     empty_color: TILE_EMPTY_COLOR,
     border_color: TILE_BORDER_COLOR,
+    crosshair_color: CROSSHAIR_COLOR,
+    score_color: SCORE_COLOR,
     scale: 1.0
 };
 
@@ -65,6 +73,18 @@ impl Settings {
                     game_options.tile_border[1],
                     game_options.tile_border[2],
                     game_options.tile_border[3]
+                ),
+                crosshair_color: color_u8!(
+                    game_options.crosshair[0],
+                    game_options.crosshair[1],
+                    game_options.crosshair[2],
+                    game_options.crosshair[3]
+                ),
+                score_color: color_u8!(
+                    game_options.score[0],
+                    game_options.score[1],
+                    game_options.score[2],
+                    game_options.score[3]
                 ),
                 scale: game_options.scale as f32
             };

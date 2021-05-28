@@ -1,20 +1,21 @@
 # Example theme:
-# filled, empty, border are RGBA colors,
+# tile_filled, tile_empty, tile_border, crosshair, score are RGBA colors separated with "," inside "[]",
 # R = Red, G = Green, B = Blue, A = Alpha
-# scale is the default scale of the tiles
-# tile_filled  = [45, 55, 65, 255]
-# tile_empty   = [40, 130, 115, 255]
-# tile_border  = [255, 255, 255, 255]
-# scale   = 1.0
+# IE: tile_filled  = [45, 55, 65, 255]
 
 # Theme 1
-tile_filled  = [45, 55, 65, 255]
-tile_empty   = [40, 130, 115, 255]
-tile_border  = [255, 255, 255, 255]
+tile_filled = [45, 55, 65, 255]
+tile_empty  = [40, 130, 115, 255]
+tile_border = [255, 255, 255, 255]
+crosshair   = [255, 0, 0, 255]
+score       = [0, 255, 0, 255]
 
 # Theme 2
-# tile_filled  = [175, 50, 100, 255]
-# tile_empty   = [200, 190, 75, 255]
-# tile_border  = [55, 20, 50, 255]
+# tile_filled = [200, 190, 75, 255]
+# tile_empty  = [55, 20, 50, 255]
+# tile_border = [175, 50, 100, 255]
+# crosshair   = [175, 50, 100, 255]
+# score       = [200, 190, 75, 255]
 
+# Scales the tiles and is the default scaling once loaded
 scale   = 1.0

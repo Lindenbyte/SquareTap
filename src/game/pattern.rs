@@ -21,6 +21,8 @@ pub struct Pattern {
     pub tiles_filled_color: Color,
     pub tiles_empty_color: Color,
     pub tiles_border_color: Color,
+    pub crosshair_color: Color,
+    pub score_color: Color,
     rng: ThreadRng,
 }
 
@@ -271,6 +273,7 @@ impl Pattern {
         if self.done {
             let score_text = &*format!("SCORE: {}!!!", self.score);
             let score_text_dim = measure_text(score_text, Some(font), 64, 1.0);
+            let color = self.score_color;
             draw_text_ex(
                 score_text,
                 screen_width() / 2.0 - score_text_dim.width / 2.0,
@@ -278,7 +281,7 @@ impl Pattern {
                 TextParams {
                     font,
                     font_size: 64,
-                    color: GREEN,
+                    color,
                     ..Default::default()
                 },
             );
@@ -288,20 +291,19 @@ impl Pattern {
                 self.last_click_pos.0,
                 self.last_click_pos.1,
                 4.0,
-                color_u8!(255, 0, 0, 255),
+                self.crosshair_color,
             );
         }
 
         // Cursor/Pointer
         let mouse_pos = mouse_position();
-        // draw_circle(mouse_pos.0, mouse_pos.1, 2.0, color_u8!(255, 0, 0, 255));
         draw_line(
             mouse_pos.0,
             mouse_pos.1 - 5.0,
             mouse_pos.0,
             mouse_pos.1 + 5.0,
             2.0,
-            color_u8!(255, 0, 0, 255),
+            self.crosshair_color,
         );
         draw_line(
             mouse_pos.0 - 5.0,
@@ -309,7 +311,7 @@ impl Pattern {
             mouse_pos.0 + 5.0,
             mouse_pos.1,
             2.0,
-            color_u8!(255, 0, 0, 255),
+            self.crosshair_color,
         );
     }
 }
@@ -332,6 +334,8 @@ impl Default for Pattern {
             tiles_filled_color: WHITE,
             tiles_empty_color: WHITE,
             tiles_border_color: WHITE,
+            crosshair_color: WHITE,
+            score_color: WHITE,
             rng: thread_rng(),
         };
     }

@@ -17,7 +17,6 @@ mod saves;
 use highscore::Highscore;
 use pattern::Pattern;
 use settings::{
-    GameSettings,
     Settings
 };
 use saves::{
@@ -83,6 +82,8 @@ impl Game {
         self.pattern.tiles_filled_color = options.filled_color;
         self.pattern.tiles_empty_color = options.empty_color;
         self.pattern.tiles_border_color = options.border_color;
+        self.pattern.crosshair_color = options.crosshair_color;
+        self.pattern.score_color = options.score_color;
         self.pattern.scale = options.scale;
         
         // Resources
