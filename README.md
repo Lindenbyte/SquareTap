@@ -4,7 +4,11 @@
 ## What is SquareTap?
 SquareTap is a game about clicking tiles as fast as you can. Fast clicks earn more points than slower ones. All this during a 30s timer before the round ends.
 
-## Changelog *v0.1.3-alpha*
+## Changelog 
+### *v0.1.4-alpha*
+* Added basic implementation of a settings system. You're now able to theme/change colors of some things. Also able to set default scale of tiles.
+
+### *v0.1.3-alpha*
 * Added basic implementation of a save system.
 
 ## Default keybindings
