@@ -1,7 +1,7 @@
 use macroquad::prelude::*;
 
 pub struct Highscore {
-    scores: [u32; 9],
+    pub scores: Vec<u32>,
 }
 
 impl Highscore {
@@ -65,6 +65,6 @@ impl Highscore {
 
 impl Default for Highscore {
     fn default() -> Highscore {
-        return Highscore { scores: [0; 9] };
+        return Highscore { scores: vec![0; 9] };
     }
 }

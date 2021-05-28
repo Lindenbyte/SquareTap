@@ -1,3 +1,9 @@
+use std::{
+    fs::remove_file,
+    convert::TryInto,
+    path::Path
+};
+
 use macroquad::prelude::*;
 
 #[cfg(target_os = "windows")]
@@ -6,10 +12,15 @@ use winapi::um::winuser::ShowCursor;
 mod highscore;
 mod pattern;
 mod settings;
+mod saves;
 
 use highscore::Highscore;
 use pattern::Pattern;
 use settings::Settings;
+use saves::{
+    GameSave,
+    load_from_file
+};
 
 #[derive(PartialEq)]
 pub enum GameState {
@@ -37,6 +48,7 @@ pub struct Game {
     pattern: Pattern,
     highscore: Highscore,
     settings: Settings,
+    save_loaded: bool,
 }
 
 impl Game {
@@ -47,14 +59,41 @@ impl Game {
     }
 
     pub async fn setup(&mut self) {
-
         #[cfg(target_os = "windows")]
         unsafe {
             ShowCursor(0);
         }
 
+        self.load().await;
+    }
+
+    pub async fn load(&mut self) {
+        if !self.save_loaded && Path::new("gamesave.bin").exists() {
+            let save = load_from_file();  
+            let scores = save.highscores.as_slice().try_into().unwrap();
+
+            println!("{:?}", scores);
+            
+            self.highscore.scores = scores;
+            self.save_loaded = true;
+        }
+
         self.menu_background = load_texture("res/img/menu_background.png").await.unwrap();
         self.font = load_ttf_font("res/fonts/alagard.ttf").await.unwrap();
+    }
+
+    pub fn save(&self) {
+        let mut temp_highscores: Vec<u32> = vec!();
+        for score in &self.highscore.scores {
+            temp_highscores.push(*score);
+        }
+
+        let mut save = GameSave::new_from_data(temp_highscores);
+
+        if Path::new("gamesave.bin").exists() {
+            remove_file("gamesave.bin").unwrap();
+        }
+        save.save_to_file();
     }
 
     pub fn update(&mut self) {
@@ -132,7 +171,7 @@ impl Game {
 
         match self.state {
             GameState::Menu => {
-                let title = "SquareTap v0.1.2 - alpha";
+                let title = "SquareTap v0.1.3 - alpha";
                 let title_dimensions = measure_text(title, Some(font), 78, 1.0);
                 draw_text_ex(
                     title,
@@ -214,7 +253,7 @@ impl Game {
         }
 
         draw_text_ex(
-            "v0.1.2 alpha",
+            "v0.1.3 alpha",
             50.0,
             screen_height() - 32.0,
             TextParams {
@@ -237,6 +276,7 @@ impl Default for Game {
             pattern: Pattern::new(),
             highscore: Highscore::new(),
             settings: Settings::new(),
+            save_loaded: false,
         };
     }
 }

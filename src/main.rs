@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate savefile_derive;
+
 use macroquad::prelude::*;
 
 mod game;
@@ -32,4 +35,6 @@ async fn main() {
 
         next_frame().await;
     }
+
+    game.save();
 }
