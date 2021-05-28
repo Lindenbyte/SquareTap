@@ -20,11 +20,11 @@ impl GameSave {
     }
 
     pub fn save_to_file(&mut self) {
-        save_file("gamesave.bin", 0, self).unwrap();
+        save_file("savefile.bin", 0, self).unwrap();
     }
 
 }
 
 pub fn load_from_file() -> GameSave {
-    return load_file("gamesave.bin", 0).unwrap();
+    return load_file("savefile.bin", 0).unwrap();
 }

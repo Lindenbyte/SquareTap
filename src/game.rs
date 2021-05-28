@@ -71,7 +71,7 @@ impl Game {
     }
 
     pub async fn load(&mut self) {
-        if !self.save_loaded && Path::new("gamesave.bin").exists() {
+        if !self.save_loaded && Path::new("savefile.bin").exists() {
             let save = load_from_file();  
             let scores = save.highscores.as_slice().try_into().unwrap();
             
@@ -98,8 +98,8 @@ impl Game {
 
         let mut save = GameSave::new_from_data(temp_highscores);
 
-        if Path::new("gamesave.bin").exists() {
-            remove_file("gamesave.bin").unwrap();
+        if Path::new("savefile.bin").exists() {
+            remove_file("savefile.bin").unwrap();
         }
         save.save_to_file();
     }

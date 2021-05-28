@@ -43,8 +43,8 @@ impl Settings {
     }
     
     pub fn load_options() -> GameSettings {
-        if Path::new("gamesave.bin").exists() {
-            let options_str = fs::read_to_string("settings.toml").unwrap();
+        if Path::new("settings.toml").exists() {
+            let options_str = fs::read_to_string("./settings.toml").unwrap();
             let game_options: GameOptions = toml::from_str(&*options_str).unwrap();
 
             return GameSettings {
